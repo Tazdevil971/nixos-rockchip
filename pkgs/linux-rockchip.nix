@@ -2,6 +2,7 @@
   pkgs,
   pkgs-stable,
   lib,
+  fetchFromGitHub,
 }:
 
 let
@@ -47,6 +48,79 @@ let
 
     DRM_PANEL_BOE_TH101MB31UIG002_28A = yes;
   };
+  radxaRk2312BuildArgs = {
+    version = "6.1.43-26-rk2312";
+    modDirVersion = "6.1.43";
+    src = pkgs.fetchFromGitHub {
+      owner = "radxa";
+      repo = "kernel";
+      rev = "ba75427f384faf9e1246fd2aeaacffae115ba88d";
+      hash = "sha256-PujHYvCuPwCMk9Yvou4Z2z51eJ6eyEeqpEs6ZYvQ3o0=";
+    };
+    extraMakeFlags = [
+      "KCFLAGS+=-Wno-error=enum-int-mismatch" 
+      "KCFLAGS+=-Wno-error=calloc-transposed-args"
+      "KCFLAGS+=-Wno-error=incompatible-pointer-types"
+    ];
+    defconfig = "rockchip_linux_defconfig";
+    ignoreConfigErrors = true;
+    structuredExtraConfig = with lib.kernel; {
+      ATA_BMDMA = yes;
+      ATA_SFF = yes;
+      ROCKCHIP_MINIDUMP = no;
+      # TODO: Properly fix
+      # ROCKCHIP_IOMUX = no;
+      # ROCKCHIP_RGA = no;
+      # ROCKCHIP_HW_DECOMPRESS_USER = no;
+      RK_NAND = no;
+      RK_NANDC_NAND = no;
+      RK_SFC_NAND = no;
+      RK_SFC_NOR = no;
+      RK_CMA_PROCFS = no;
+      DMABUF_HEAPS_SRAM = no;
+      MALI_KUTF = no;
+      MFD_SERDES_DISPLAY = no;
+      DRM_AMDGPU = no;
+      VIDEO_DES_MAXIM2C = no;
+      VIDEO_DES_MAXIM4C = no;
+      VIDEO_MAXIM_DES_MAXIM2C = no;
+      VIDEO_TECHPOINT = no;
+      VIDEO_AR0822 = no;
+      VIDEO_AR2020 = no;
+      VIDEO_MAX96712 = no;
+      VIDEO_MAX96714 = no;
+      VIDEO_MAX96722 = no;
+      VIDEO_MAX96756 = no;
+      VIDEO_MIS2031 = no;
+      VIDEO_MIS4001 = no;
+      VIDEO_OG01A10 = no;
+      VIDEO_OG02B10 = no;
+      VIDEO_OS02K10 = no;
+      VIDEO_OS04D10 = no;
+      VIDEO_OV16885 = no;
+      VIDEO_SC1346 = no;
+      VIDEO_SC223A = no;
+      VIDEO_SC2355 = no;
+      VIDEO_SC4336P = no;
+      VIDEO_SC450AI = no;
+      VIDEO_SC5336 = no;
+      VIDEO_ROCKCHIP_PREISP = no;
+      # TODO: Properly fix
+      # VIDEO_ROCKCHIP_ISP = no;
+      STMMAC_UIO = no;
+      NVMEM_RK628_EFUSE = no;
+      NVMEM_ROCKCHIP_SEC_OTP = no;
+      TOUCHSCREEN_CYPRESS_CYTTSP5 = no;
+      RTC_DRV_RK630 = no;
+      COMPASS_AK8975 = no;
+      LS_CM3232 = no;
+      GS_DMT10 = no;
+      GS_KXTJ9 = no;
+      GS_MC3230 = no;
+      GS_MMA7660 = no;
+      GS_MMA8452 = no;
+    };
+  };
 in
 {
   linux_latest_rockchip_stable = pkgs-stable.linuxKernel.packagesFor (
@@ -56,6 +130,13 @@ in
     pkgs.linuxKernel.kernels.linux_latest.override { structuredExtraConfig = kernelConfig; }
   );
 
+  linux_6_1_radxa_rk2312_stable = pkgs-stable.linuxKernel.packagesFor (
+    pkgs-stable.buildLinux radxaRk2312BuildArgs
+  );
+  linux_6_1_radxa_rk2312_unstable = pkgs.linuxKernel.packagesFor (
+    pkgs.buildLinux radxaRk2312BuildArgs
+  );
+      
   linux_6_18_pinetab_stable =
     let
       version = "6.18.10-danctnix1";

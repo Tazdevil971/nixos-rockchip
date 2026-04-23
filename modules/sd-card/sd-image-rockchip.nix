@@ -25,6 +25,9 @@
       grub.enable = false;
       generic-extlinux-compatible.enable = true;
     };
+    
+    # Required for 6.1.43-26-rk2312 which is built with autoModules = false
+    # initrd.allowMissingModules = true;
   };
 
   config.sdImage =

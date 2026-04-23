@@ -2,7 +2,7 @@
   description = "Build NixOS images for rockchip based computers";
 
   inputs = {
-    nixpkgsStable.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgsStable.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgsUnstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
   };
@@ -147,6 +147,11 @@
               self.nixosModules.dtOrangePi5B
             ];
           };
+          "RadxaRock2" = {
+            uBoot = uBoot.uBootRadxaRock2;
+            kernel = kernel.linux_6_1_radxa_rk2312_stable;
+            extraModules = [ noZFS ];
+          };
           "RadxaCM3IO" = {
             uBoot = uBoot.uBootRadxaCM3IO;
             kernel = kernel.linux_latest_rockchip_stable;
@@ -207,6 +212,7 @@
         dtOverlayQuartz64ASATA = import ./modules/dt-overlay/quartz64a-sata.nix;
         dtOverlayPCIeFix = import ./modules/dt-overlay/pcie-fix.nix;
         dtOrangePi5B = import ./modules/dt-overlay/rk3588s-orangepi5b.nix;
+        dtOverlayRock2AEnablePCIe = import ./modules/dt-overlay/rock-2a-enable-pcie.nix;
       };
     }
     // inputs.utils.lib.eachDefaultSystem (
@@ -215,6 +221,9 @@
           kernel_linux_latest_rockchip_stable = kernel.linux_latest_rockchip_stable;
           kernel_linux_latest_rockchip_unstable = kernel.linux_latest_rockchip_unstable;
 
+          kernel_linux_6_1_radxa_rk2312_stable = kernel.linux_6_1_radxa_rk2312_stable;
+          kernel_linux_6_1_radxa_rk2312_unstable = kernel.linux_6_1_radxa_rk2312_unstable;
+          
           kernel_linux_6_18_pinetab_stable = kernel.linux_6_18_pinetab_stable;
           kernel_linux_7_0_pinetab_unstable = kernel.linux_7_0_pinetab_unstable;
 
@@ -237,6 +246,7 @@
           uBootOrangePiCM4 = uBoot.uBootOrangePiCM4;
           uBootOrangePi5B = uBoot.uBootOrangePi5B;
 
+          uBootRadxaRock2 = uBoot.uBootRadxaRock2;
           uBootRadxaCM3IO = uBoot.uBootRadxaCM3IO;
           uBootRadxaRock4 = uBoot.uBootRadxaRock4;
           uBootRadxaRock4SE = uBoot.uBootRadxaRock4SE;
