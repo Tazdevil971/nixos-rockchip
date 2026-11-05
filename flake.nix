@@ -203,6 +203,11 @@
             kernel = kernel.linux_latest_rockchip_stable;
             extraModules = [ noZFS ];
           };
+          "RadxaRock5C" = {
+            uBoot = uBoot.uBootRadxaRock5C;
+            kernel = kernel.linux_latest_rockchip_stable;
+            extraModules = [ noZFS ];
+          };
           "NanoPC-T6" = {
             uBoot = uBoot.uBootNanoPCT6;
             kernel = kernel.linux_latest_rockchip_stable;

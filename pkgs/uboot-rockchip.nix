@@ -150,7 +150,7 @@ let
         ROCKCHIP_TPL = (rkbin + "/bin/rk35/rk3566_ddr_1056MHz_v1.18.bin");
       };
     };
-  buildRK3588UBoot =
+  buildRK3588UBoot2025 =
     defconfig:
     let
       src = pkgs-stable.fetchFromGitHub {
@@ -176,6 +176,29 @@ let
         license = pkgs-stable.lib.licenses.unfreeRedistributableFirmware;
       };
     };
+    buildRK3588UBoot =
+      defconfig:
+      let
+        src = pkgs-stable.fetchFromGitHub {
+          owner = "u-boot";
+          repo = "u-boot";
+          rev = "v2026.10";
+          hash = "sha256-BXIpyAY+uKSohrdG4BxAo0zq4CYmh2z9rFw1jA7Yu8s=";
+        };
+      in
+      pkgs-stable.buildUBoot {
+        inherit defconfig src;
+        version = "v2026.10";
+        filesToInstall = [ "u-boot-rockchip.bin" ];
+        env = {
+          BL31 = pkgs-stable.rkbin.BL31_RK3588;
+          ROCKCHIP_TPL = pkgs-stable.rkbin.TPL_RK3588;
+        };
+        extraMeta = {
+          platforms = [ "aarch64-linux" ];
+          license = pkgs-stable.lib.licenses.unfreeRedistributableFirmware;
+        };
+      };
 in
 {
   uBootQuartz64A = buildRK3566UBoot { defconfig = "quartz64-a-rk3566_defconfig"; };
@@ -234,7 +257,7 @@ in
   };
   uBootOrangePiCM4 = buildRK3566UBoot { defconfig = "orangepi-3b-rk3566_defconfig"; };
   uBootOrangePi3B = buildRK3566UBoot { defconfig = "orangepi-3b-rk3566_defconfig"; };
-  uBootOrangePi5B = buildRK3588UBoot "orangepi-5b-rk3588s_defconfig";
+  uBootOrangePi5B = buildRK3588UBoot2025 "orangepi-5b-rk3588s_defconfig";
   uBootRadxaRock2 = buildRK3528UBoot "rock-2-rk3528_defconfig";
   uBootRadxaCM3IO = buildRK3566UBoot {
     defconfig = "radxa-cm3-io-rk3566_defconfig";
@@ -243,6 +266,7 @@ in
   uBootRadxaRock4 = buildRK3399UBoot "rock-pi-4-rk3399_defconfig";
   uBootRadxaRock4SE = buildRK3399UBoot "rock-4se-rk3399_defconfig";
   uBootRadxaRock4CPlus = buildRK3399UBoot "rock-4c-plus-rk3399_defconfig";
+  uBootRadxaRock5C = buildRK3588UBoot "rock-5c-rk3588s_defconfig";
   uBootNanoPCT6 = buildRK3588UBoot "nanopc-t6-rk3588_defconfig";
   uBootSige7 = buildRK3588UBoot "sige7-rk3588_defconfig";
 }
